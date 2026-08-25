@@ -1,0 +1,15 @@
+# CPU-only. Install the torch trio from the CPU index first so pip doesn't
+# backtrack into CUDA wheels. Python 3.11 (avoid 3.12 - a transitive yolov5 dep
+# has import breakage there).
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.6.0+cpu
+torchvision==0.21.0+cpu
+torchaudio==2.6.0+cpu          # pulled by PytorchWildlife; keep CPU-matched to torch
+numpy==1.26.4                  # CRITICAL: <2 avoids the NumPy 2.x ABI crash
+paho-mqtt==2.1.0
+requests==2.32.3
+Pillow==11.1.0
+timm>=1.0.17,<1.1
+open_clip_torch==2.32.0        # BioCLIP 2 via hf-hub:
+PytorchWildlife==1.2.4.2       # MegaDetector v6; hard-pins supervision==0.23.0 (do not override)
+# stdlib used directly: sqlite3, smtplib, email, json, queue, threading

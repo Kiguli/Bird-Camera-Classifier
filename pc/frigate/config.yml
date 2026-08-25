@@ -1,0 +1,87 @@
+# Frigate config — Office Tree Field Station.
+# PROTOTYPE PHASE: the source is the Windows-hosted MediaMTX on this machine
+# (test pattern or Kinect bridge publishing to /cam). When the Pi is live,
+# change the path back to rtsp://<pi-ip>:8554/cam — nothing else changes.
+
+mqtt:
+  # The enrichment service subscribes to frigate/events via this broker (the
+  # mosquitto service in docker-compose.yml).
+  enabled: true
+  host: mosquitto
+  port: 1883
+
+# Restream through go2rtc so the browser gets a real MSE/WebRTC player instead
+# of the jsmpeg fallback, which corrupts to magenta when it drops a reference
+# frame. Also means one connection to the source regardless of viewers.
+go2rtc:
+  streams:
+    office_tree:
+      - rtsp://host.docker.internal:8554/cam
+
+detectors:
+  cpu1:
+    type: cpu
+    # One camera at 10 fps is a light load. On a native-Linux box with an Intel
+    # iGPU, switch to OpenVINO per https://docs.frigate.video/configuration/object_detectors/
+
+# Global detect settings, applied to every camera.
+# enabled MUST be set explicitly: Frigate 0.17 defaults it to false, and with it
+# false nothing is ever detected, no events fire, and - because retention below
+# is event-only - nothing is recorded either. Setting it here rather than on the
+# camera means it survives swapping the Kinect out for the Pi camera.
+detect:
+  enabled: true
+  fps: 10
+
+cameras:
+  office_tree:
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/office_tree
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+            - record
+    live:
+      streams:
+        Office Tree: office_tree
+    # No camera-level detect block on purpose. enabled/fps come from the global
+    # one above, and detect width/height are left unset so Frigate auto-detects
+    # them: hard-coding a resolution that doesn't match the source (1280x720
+    # against the Kinect's actual 640x480) misaligns the YUV planes and turns
+    # the picture magenta. The Pi camera will be a different size again.
+    objects:
+      track:
+        - bird
+        - cat
+        - dog
+        - person
+      # Note: "squirrel" is not a default COCO label — squirrels will mostly
+      # show up as low-confidence cat/dog/bird until week 4's classifier.
+    snapshots:
+      enabled: true
+      clean_copy: true
+      retain:
+        default: 30
+    record:
+      enabled: true
+      # Event-only retention. We deliberately do NOT keep a rolling archive of
+      # everything the camera sees - that filled 728MB in three hours. Frigate
+      # always holds a short rolling cache in memory, so a clip can still begin
+      # a few seconds BEFORE the bird arrived; only footage belonging to an
+      # alert or detection is written to disk and kept.
+      continuous:
+        days: 0
+      motion:
+        days: 0
+      alerts:
+        retain:
+          days: 30
+        pre_capture: 5
+        post_capture: 5
+      detections:
+        retain:
+          days: 30
+        pre_capture: 5
+        post_capture: 5
+version: 0.17-0

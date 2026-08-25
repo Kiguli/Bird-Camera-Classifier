@@ -1,0 +1,12 @@
+# The Pi scripts run on Linux. Without this, a Windows clone checks them out with
+# CRLF and bash fails with "\r: command not found" on the shebang line.
+*.sh text eol=lf
+pi/mediamtx.yml text eol=lf
+
+# PowerShell and Windows batch stay CRLF.
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Everything else: normalise in the repo, native on checkout.
+* text=auto

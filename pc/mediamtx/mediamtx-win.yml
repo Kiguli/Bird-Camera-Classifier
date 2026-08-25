@@ -1,0 +1,25 @@
+# MediaMTX config for the WINDOWS-HOSTED prototype (Kinect / test pattern era).
+# This machine temporarily plays the Pi's role: publishers push to rtsp://127.0.0.1:8554/cam
+# and Frigate (in Docker) reads rtsp://host.docker.internal:8554/cam.
+# When the real Pi is live, Frigate's config just points back at the Pi and
+# this server is no longer needed.
+#
+# Start it with:  .\start-mediamtx.ps1
+# Only overrides are listed; MediaMTX defaults cover everything else.
+
+logLevel: info
+
+# TCP only - the container-to-host hop is happier without UDP.
+rtspTransports: [tcp]
+
+# Default is 512 packets, which a single 1080p keyframe can exceed on its own
+# (~350 RTP packets at 1440 bytes). When the queue fills, the publisher stalls
+# on every keyframe and a 15fps feed collapses to 1-2fps. Irrelevant for the
+# small 640x480 v1 stream; essential for the 1080p v2.
+writeQueueSize: 8192
+
+paths:
+  # One publish point, whatever the source: ffmpeg test pattern now,
+  # the Kinect bridge next, and it mirrors the Pi's /cam path exactly.
+  # Run only one publisher at a time.
+  cam:

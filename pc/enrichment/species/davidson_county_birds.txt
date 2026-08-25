@@ -1,0 +1,78 @@
+# Candidate species for zero-shot classification (Davidson County, TN).
+# Format: Common Name | Scientific name
+# One species per line; '#' comments and blank lines are ignored.
+#
+# This is a starting set of common feeder / yard / tree species. Refine it
+# against the eBird bar chart for Davidson County
+# (https://ebird.org/barchart?r=US-TN-037) - trimming to species actually
+# recorded here is what keeps a fine-grained classifier accurate (see
+# docs/PLAN.md). BioCLIP 2 keys on scientific names, so those matter most;
+# the classifier picks the exact prompt format.
+
+Northern Cardinal | Cardinalis cardinalis
+Carolina Chickadee | Poecile carolinensis
+Tufted Titmouse | Baeolophus bicolor
+Carolina Wren | Thryothorus ludovicianus
+House Wren | Troglodytes aedon
+Blue Jay | Cyanocitta cristata
+American Crow | Corvus brachyrhynchos
+Fish Crow | Corvus ossifragus
+Mourning Dove | Zenaida macroura
+Rock Pigeon | Columba livia
+Eurasian Collared-Dove | Streptopelia decaocto
+Northern Mockingbird | Mimus polyglottos
+Brown Thrasher | Toxostoma rufum
+Gray Catbird | Dumetella carolinensis
+American Robin | Turdus migratorius
+Eastern Bluebird | Sialia sialis
+Wood Thrush | Hylocichla mustelina
+Hermit Thrush | Catharus guttatus
+House Finch | Haemorhous mexicanus
+Purple Finch | Haemorhous purpureus
+American Goldfinch | Spinus tristis
+Pine Siskin | Spinus pinus
+House Sparrow | Passer domesticus
+Song Sparrow | Melospiza melodia
+Chipping Sparrow | Spizella passerina
+Field Sparrow | Spizella pusilla
+White-throated Sparrow | Zonotrichia albicollis
+White-crowned Sparrow | Zonotrichia leucophrys
+Dark-eyed Junco | Junco hyemalis
+Eastern Towhee | Pipilo erythrophthalmus
+Downy Woodpecker | Dryobates pubescens
+Hairy Woodpecker | Dryobates villosus
+Red-bellied Woodpecker | Melanerpes carolinus
+Northern Flicker | Colaptes auratus
+Pileated Woodpecker | Dryocopus pileatus
+Yellow-bellied Sapsucker | Sphyrapicus varius
+White-breasted Nuthatch | Sitta carolinensis
+Red-breasted Nuthatch | Sitta canadensis
+Brown Creeper | Certhia americana
+Ruby-crowned Kinglet | Corthylio calendula
+Golden-crowned Kinglet | Regulus satrapa
+Blue-gray Gnatcatcher | Polioptila caerulea
+Eastern Phoebe | Sayornis phoebe
+Ruby-throated Hummingbird | Archilochus colubris
+Chimney Swift | Chaetura pelagica
+European Starling | Sturnus vulgaris
+Cedar Waxwing | Bombycilla cedrorum
+Common Grackle | Quiscalus quiscula
+Red-winged Blackbird | Agelaius phoeniceus
+Brown-headed Cowbird | Molothrus ater
+Baltimore Oriole | Icterus galbula
+Orchard Oriole | Icterus spurius
+Yellow-rumped Warbler | Setophaga coronata
+Pine Warbler | Setophaga pinus
+Yellow-throated Warbler | Setophaga dominica
+Common Yellowthroat | Geothlypis trichas
+American Redstart | Setophaga ruticilla
+Summer Tanager | Piranga rubra
+Scarlet Tanager | Piranga olivacea
+Northern Parula | Setophaga americana
+Indigo Bunting | Passerina cyanea
+Rose-breasted Grosbeak | Pheucticus ludovicianus
+Cooper's Hawk | Accipiter cooperii
+Sharp-shinned Hawk | Accipiter striatus
+Red-shouldered Hawk | Buteo lineatus
+Red-tailed Hawk | Buteo jamaicensis
+American Kestrel | Falco sparverius

@@ -1,0 +1,27 @@
+# MediaMTX config — Office Tree Field Station capture node.
+# Installed to /etc/mediamtx/mediamtx.yml by setup.sh.
+# Only overrides are listed; MediaMTX defaults cover everything else.
+# After editing on the Pi: sudo systemctl restart mediamtx
+
+logLevel: info
+
+# RTSP over TCP only — UDP over WiFi is how you get smearing and grey frames.
+rtspTransports: [tcp]
+
+paths:
+  # The real camera (Camera Module 3), once it arrives. MediaMTX retries this
+  # path until a camera is present, so it is safe to configure in advance.
+  cam:
+    source: rpiCamera
+    rpiCameraWidth: 1920
+    rpiCameraHeight: 1080
+    rpiCameraFPS: 15
+    rpiCameraBitrate: 3000000
+    # Phase-detect AF: lock onto the feeder, not the glass.
+    rpiCameraAfMode: continuous
+    # The plan calls for fixed white balance behind tinted glazing.
+    # Start with daylight; revisit against real footage.
+    rpiCameraAWB: daylight
+
+  # Open publish point — test-pattern.sh streams here before the camera arrives.
+  test:

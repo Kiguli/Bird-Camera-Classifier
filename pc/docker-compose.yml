@@ -1,0 +1,71 @@
+# The compute node: Frigate NVR + MQTT broker + the species-classification /
+# notification service. Runs on the machine hosting Frigate - Windows (Docker
+# Desktop/WSL2) now, Ubuntu later. On Ubuntu this is the whole stack.
+#
+#   cd pc
+#   cp enrichment/.env.example enrichment/.env   # then edit SMTP + recipients
+#   docker compose up -d
+#   open http://localhost:5000
+#
+# Note: under Docker Desktop/WSL2 the Intel iGPU isn't exposed, so Frigate uses
+# the CPU detector - fine for one camera at 10 fps. On native Linux with an Intel
+# CPU, switch the detector to OpenVINO in frigate/config.yml.
+services:
+  frigate:
+    container_name: frigate
+    image: ghcr.io/blakeblackshear/frigate:stable
+    restart: unless-stopped
+    stop_grace_period: 30s
+    shm_size: "192mb"
+    environment:
+      - TZ=America/Chicago
+    volumes:
+      - ./frigate:/config
+      - ./storage:/media/frigate
+    ports:
+      - "5000:5000"   # web UI (unauthenticated, localhost only is fine)
+      - "8971:8971"   # authenticated UI
+      - "8555:8554"   # Frigate's own restreams (host 8554 belongs to the Pi's URL space)
+    depends_on:
+      - mosquitto
+    networks: [fieldstation]
+
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+    # No host port published: only Frigate and the enrichment service (same
+    # network) need the broker. Add `ports: ["1883:1883"]` only to debug from the host.
+    networks: [fieldstation]
+
+  enrichment:
+    container_name: enrichment
+    build: ./enrichment
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+      - frigate
+    env_file:
+      - ./enrichment/.env
+    environment:
+      # These override .env for the in-compose networking, so they can't be
+      # mis-set: reach the broker and Frigate by their compose service names.
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - FRIGATE_URL=http://frigate:5000
+    volumes:
+      - ./enrichment/data:/data                       # SQLite + saved media
+      - hf_cache:/root/.cache/huggingface             # model weights persist
+      - torch_cache:/root/.cache/torch
+    networks: [fieldstation]
+
+networks:
+  fieldstation:
+
+volumes:
+  mosquitto_data:
+  hf_cache:
+  torch_cache:

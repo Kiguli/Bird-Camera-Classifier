@@ -1,0 +1,71 @@
+# ---------------------------------------------------------------------------
+# Secrets and generated cryptographic material - NEVER commit
+# ---------------------------------------------------------------------------
+# MediaMTX self-signs these on first run if absent.
+auto.crt
+auto.key
+*.pem
+# Frigate mints this on first start; committing it would let anyone forge a
+# session token for the UI.
+pc/frigate/.jwt_secret
+
+# ---------------------------------------------------------------------------
+# Enrichment service: real SMTP creds and its runtime data/media never commit
+# ---------------------------------------------------------------------------
+pc/enrichment/.env
+pc/enrichment/data/
+
+# ---------------------------------------------------------------------------
+# Captured media - the whole point of the retention policy is NOT to hoard this
+# ---------------------------------------------------------------------------
+pc/storage/
+
+# ---------------------------------------------------------------------------
+# Frigate runtime state (databases, caches, migration backups)
+# ---------------------------------------------------------------------------
+pc/frigate/*.db
+pc/frigate/*.db-shm
+pc/frigate/*.db-wal
+pc/frigate/backup.db
+pc/frigate/backup_config.yaml
+pc/frigate/go2rtc_homekit.yml
+pc/frigate/.exports
+pc/frigate/.timeline
+pc/frigate/.vacuum
+pc/frigate/.search_stats.json
+pc/frigate/model_cache/
+pc/frigate/exports/
+
+# ---------------------------------------------------------------------------
+# Downloaded third-party binaries - fetched by pc/setup-pc.ps1, not committed
+# ---------------------------------------------------------------------------
+pc/mediamtx/mediamtx.exe
+pc/mediamtx/mediamtx.yml
+pc/mediamtx/LICENSE
+
+# ---------------------------------------------------------------------------
+# Build artifacts - rebuilt by pc/kinect-bridge/build.ps1
+# ---------------------------------------------------------------------------
+*.exe
+*.pdb
+*.obj
+# Microsoft's SDK redistributable; build.ps1 copies it from the local SDK
+# install rather than us redistributing Microsoft's binary. Unanchored so it
+# matches the v2 bridge's subdirectory copy too.
+Microsoft.Kinect.dll
+*.dll
+
+# ---------------------------------------------------------------------------
+# Python bytecode / caches
+# ---------------------------------------------------------------------------
+__pycache__/
+*.pyc
+
+# ---------------------------------------------------------------------------
+# Editor / OS noise
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+*.swp
